@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var database = {};
 
 database.init = function(app, config) {
@@ -30,7 +31,7 @@ function createSchema(app, config) {
     
     console.log('설정의 DB 스키마 수 : ' + config.db_schemas.length);
 
-    for (var i = 0; i < config.db_schemas.length < i++ ) {
+    for (var i = 0; i < config.db_schemas.length ; i++ ) {
         var curItem = config.db_schemas[i];
 
         var curSchema = require(curItem.file).createSchema(mongoose);

@@ -1,4 +1,4 @@
-// ** config(port, db) 관련부분만 모듈화시켜서 빼는 실습 ** //
+// ** routes 부분만 모듈화시켜서 빼는 실습 ** //
 
 // Mongodb와 express 연결시키기 위한 기초작업
 var express = require('express');
@@ -22,14 +22,11 @@ var config = require('./config')
 // database_loader 모듈 불러오기
 var database_loader = require('./database/database_loader');
 
+// route_loader 모듈 불러오기
+var route_loader = require('./routes/route_loader');
+
 // 암호화 모듈 사용
 var crypto = require('crypto');
-
-// mongoose 모듈 사용
-var mongoose = require('mongoose')
-
-var database;
-var UserSchema;
 
 var app = express();
 
@@ -48,15 +45,7 @@ app.use(expressSession({
     saveUninitialized : true
 }));
 
-var router = express.Router();
-
-router.route('/process/login').post(user.login);
-
-router.route('/process/adduser').post(user.adduser);
-
-router.route('/process/listuser').post(user.listuser);
-
-app.use('/', router);
+route_loader.init(app, express.Router());
 
 var errorHandler = expressErrorHandler({
     static : {
