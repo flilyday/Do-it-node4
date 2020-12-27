@@ -19,6 +19,9 @@ var user = require('./routes/user');
 // Config로 분리한 설정 관련 모듈 불러오기
 var config = require('./config')
 
+// database_loader 모듈 불러오기
+var database_loader = require('./database/database_loader');
+
 // 암호화 모듈 사용
 var crypto = require('crypto');
 
@@ -45,35 +48,6 @@ app.use(expressSession({
     saveUninitialized : true
 }));
 
-function connectDB() {
-    mongoose.Promise = global.Promise;
-    mongoose.connect(config.db_url);
-    database = mongoose.connection;
-
-    database.on('open', function(){
-        console.log('데이터베이스에 연결됨 : ' + databaseUrl);     
-        
-        createUserSchema(database);
-    });
-    
-    database.on('disconnected', function(){
-        console.log('데이터베이스 연결 끊어짐');
-    });
-
-    database.on('error', console.error.bind(console, 'mongoose 연결 에러'));
-
-    app.set('database', database)
-   
-}
-
-function createUserSchema(database) {
-    database.userSchema = require('./database/user_schema').createSchema(mongoose); 
-
-    database.UserModel = mongoose.model('users3', database.UserSchema);
-    console.log('UserModel 정의함');  
-
-}
-
 var router = express.Router();
 
 router.route('/process/login').post(user.login);
@@ -92,5 +66,5 @@ var errorHandler = expressErrorHandler({
 
 var server = http.createServer(app).listen(app.get('port'), function(){
     console.log('express함수를 실행함 : ' + app.get('port'))
-    connectDB();
+    database.init(app. config);    
 })
